@@ -1,3 +1,12 @@
+import ddf.minim.*;
+import ddf.minim.analysis.*;
+import ddf.minim.effects.*;
+import ddf.minim.signals.*;
+import ddf.minim.spi.*;
+import ddf.minim.ugens.*;
+
+
+
 color riverBlue = #005A8B;
 color lightBlue = #A2C2D4;
 color darkGreen = #3F5822;
@@ -5,6 +14,10 @@ color lightGreen = #B7E3C4;
 color lightGray = #D6E8D7;
 color white = #FFFFFF;
 color black = #000000;
+float skyblueR = 135;
+float skyblueG = 206;
+float skyblueB = 235;
+
 
 float swanColor = 255;
 
@@ -52,7 +65,7 @@ void setup(){
 
 void draw(){
   // Sky
-  background(#87CEEB);
+  background(skyblueR, skyblueG, skyblueB);
   
   // Grass 
   noStroke();
@@ -84,7 +97,9 @@ void draw(){
   swan(pos3, 710, sign3, white, angle34); 
   
   //sun
-  drawSun(820, 80);
+  if(count < 700){
+    drawSun(820, 80);
+  }
   
   //movement
   if(count < 500){
@@ -143,10 +158,25 @@ void draw(){
     }
   
   
-  if(count >= 700){
+  if(count >= 1000){
     drawSparkles();
   }
   
+  if(count >= 700){
+    if(skyblueR >= 70){
+      skyblueR -= 1;
+    }
+    if(skyblueG >= 70){
+      skyblueG -= 1;
+    }
+    if(skyblueB >= 70){
+      skyblueB -= 1;
+    }
+  }
+  
+  
+  
+  //frame count 
   count += 1;
   
 }
