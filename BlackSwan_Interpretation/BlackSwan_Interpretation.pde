@@ -5,7 +5,17 @@ import ddf.minim.signals.*;
 import ddf.minim.spi.*;
 import ddf.minim.ugens.*;
 
+//initial weather
+Minim minim;
+AudioPlayer nature;
 
+//final weather
+Minim minim1;
+AudioPlayer badWeather;
+
+//thunder
+Minim minim2;
+AudioPlayer thunder;
 
 color riverBlue = #005A8B;
 color lightBlue = #A2C2D4;
@@ -56,11 +66,30 @@ float spark3Y = 720;
 float angle15 = 0;
 float angle34 = 0;
 
+//cloud
+float cloudX1 = -500;
+float cloudX2 = 1400;
+
+
 
 
 void setup(){
   size(900, 900);
   count = 0;
+  
+  //initial weather
+  minim = new Minim(this);
+  nature = minim.loadFile("nature.mp3");
+  nature.play();
+  
+  //final weather
+  minim1 = new Minim(this);
+  badWeather = minim1.loadFile("badWeather.mp3");
+  
+  //thunder
+  minim2 = new Minim(this);
+  thunder = minim2.loadFile("thunder.mp3");
+  
 }
 
 void draw(){
@@ -148,20 +177,24 @@ void draw(){
     swanColor -= 1;
   }
   
+  //other swans facing the middle swan
   if(count == 560){
     sign1 = -sign1;
   }
   
-    if(count > 600 && count < 650){
-      angle15 += 0.005;
-      angle34 += -0.005;
-    }
+  //swans' angle tilt
+  if(count > 600 && count < 650){
+    angle15 += 0.005;
+    angle34 += -0.005;
+  }
   
-  
-  if(count >= 1000){
+  //middle swan glowing
+  if(count >= 2000){
     drawSparkles();
   }
   
+  
+  //sky color change
   if(count >= 700){
     if(skyblueR >= 70){
       skyblueR -= 1;
@@ -172,8 +205,49 @@ void draw(){
     if(skyblueB >= 70){
       skyblueB -= 1;
     }
+    
   }
   
+  //cloud count
+  if(skyblueR <= 120 && skyblueG <= 120 && skyblueB <= 120){
+    if(cloudX1 < 100){
+      cloudX1 += 2;
+    }
+    if(cloudX2 > 800){
+      cloudX2 -= 2;
+    }
+  }
+  
+  //cloud from left
+  drawCloud(cloudX1, 100);
+  drawCloud(cloudX1 + 140, 160);
+  drawCloud(cloudX1 + 260, 90);
+  
+  //cloud from right
+  drawCloud(cloudX2, 165);
+  drawCloud(cloudX2 - 160, 70);
+  drawCloud(cloudX2 - 290, 150);
+  
+  
+  //lighting
+  if(count > 1200 && count < 1220){
+    drawLightning();
+  }
+  
+ //thunder
+ if(count > 1300 && count < 1360){
+   thunder.play();
+ }
+  
+  //nature music stop
+  if(count == 500){
+    minim.stop();
+  }
+  
+  //bad weather
+  if(count > 700 && count < 1800){
+    badWeather.play();
+  }
   
   
   //frame count 
@@ -259,6 +333,66 @@ void drawSparkles(){
   line( 40, -40,  55, -55);    // up-right
   line(-40,  25, -55,  40);    // down-left
   line( 40,  25,  55,  40);    // down-right
+  
+  noStroke();
+  popMatrix();
+}
+
+void drawCloud(float x, float y){
+  pushMatrix();
+  translate(x, y);
+  noStroke();
+  fill(255, 255, 255, 200);
+  ellipse(0, 0,  90, 55);
+  ellipse(45, 8, 75, 48);
+  ellipse(-40, 10, 65, 42);
+  ellipse(12, -20, 70, 50);
+  popMatrix();
+}
+
+void drawLightning(){
+  pushMatrix();
+  translate(400, 50);
+  stroke(#FFFF88);
+  strokeWeight(6);
+  
+  // Main bolt
+  line(0,   0,  -20, 50);
+  line(-20, 50,  10, 50);
+  line(10,  50, -20, 100);
+  line(-20, 100, 5, 100);
+  line(5,  100, -25, 160);
+  
+  // Glow layer
+  stroke(255, 255, 150, 80);
+  strokeWeight(14);
+  line(0,   0,  -20, 50);
+  line(-20, 50,  10, 50);
+  line(10,  50, -20, 100);
+  line(-20, 100, 5, 100);
+  line(5,  100, -25, 160);
+  
+  noStroke();
+  popMatrix();
+  
+  // Second bolt
+  pushMatrix();
+  translate(600, 60);
+  stroke(#FFFF88);
+  strokeWeight(6);
+  line(0,   0,  -15, 45);
+  line(-15, 45,  10, 45);
+  line(10,  45, -15, 95);
+  line(-15, 95,  5,  95);
+  line(5,   95, -20, 150);
+  
+  stroke(255, 255, 150, 80);
+  strokeWeight(14);
+  line(0,   0,  -15, 45);
+  line(-15, 45,  10, 45);
+  line(10,  45, -15, 95);
+  line(-15, 95,  5,  95);
+  line(5,   95, -20, 150);
   
   noStroke();
   popMatrix();
